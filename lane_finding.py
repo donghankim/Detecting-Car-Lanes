@@ -157,39 +157,43 @@ def interpolate(lanes, img):
 
 def main():
     img_dict = {}
-    img = cv2.imread("media/test_img.jpg")
-    gray = grayscale(img)
-    gray_blur = gaussian_blur(gray, 3)
-    edges = canny(gray_blur, low_threshold=75, high_threshold=150)
-    points = np.array([[130, 600], [380, 300], [650, 300], [900, 550]], dtype=np.int32)
-    ROI = region_of_interest(edges, [points])
-    lines = hough_lines(ROI, 2, np.pi/180, 15, 5, 25, True)
-    lanes = hough_lines(ROI, 2, np.pi/180, 15, 5, 25, False)
-    res = interpolate(lanes, img)
+    in_file = input("Enter image file path:\n")
+    if os.path.isfile(in_file):
+        img = cv2.imread(in_file)
+        gray = grayscale(img)
+        gray_blur = gaussian_blur(gray, 3)
+        edges = canny(gray_blur, low_threshold=75, high_threshold=150)
+        points = np.array([[130, 600], [380, 300], [650, 300], [900, 550]], dtype=np.int32)
+        ROI = region_of_interest(edges, [points])
+        lines = hough_lines(ROI, 2, np.pi/180, 15, 5, 25, True)
+        lanes = hough_lines(ROI, 2, np.pi/180, 15, 5, 25, False)
+        res = interpolate(lanes, img)
 
-    img_dict['img'] = img
-    img_dict['gray'] = gray_blur
-    img_dict['edges'] = edges
-    show_img(img_dict, "media/edges.png")
+        img_dict['img'] = img
+        img_dict['gray'] = gray_blur
+        img_dict['edges'] = edges
+        show_img(img_dict, "image_output/edges.png")
 
-    img_dict = {}
-    img_dict['img'] = img
-    img_dict['edges'] = edges
-    img_dict['roi'] = ROI
-    show_img(img_dict, "media/roi.png")
+        img_dict = {}
+        img_dict['img'] = img
+        img_dict['edges'] = edges
+        img_dict['roi'] = ROI
+        show_img(img_dict, "image_output/roi.png")
 
-    img_dict = {}
-    img_dict['img'] = img
-    img_dict['roi'] = ROI
-    img_dict['lines'] = lines
-    show_img(img_dict, "media/lines.png")
+        img_dict = {}
+        img_dict['img'] = img
+        img_dict['roi'] = ROI
+        img_dict['lines'] = lines
+        show_img(img_dict, "image_output/lines.png")
 
-    img_dict = {}
-    img_dict['img'] = img
-    img_dict[ 'lanes'] = lanes
-    img_dict['res'] = res
-    show_img(img_dict, "media/result.png")
+        img_dict = {}
+        img_dict['img'] = img
+        img_dict[ 'lanes'] = lanes
+        img_dict['res'] = res
+        show_img(img_dict, "image_output/result.png")
 
+    else:
+        print("Invalif file path.")
 
 
 if __name__ == '__main__':

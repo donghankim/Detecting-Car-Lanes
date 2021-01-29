@@ -13,7 +13,7 @@ In order to run my code, you will first have to install all of the dependancies.
 ```python3
 pip install -r requirements.txt
 ```
-The python file <strong>lane_finding.py</strong> contains code that will allow you to run my algorithm on still images. If you have your own video you want to run using my algorithm, then use the jupyter notebook <strong>lane_finding.ipynb</strong> instead. Regardless, you will have to install all of the packages before you can run my code.
+The python file <strong>lane_finding.py</strong> contains code that will allow you to run my algorithm on still images. The output will automatically be saved in the image_output folder. If you have your own video you want to run using my algorithm, then use the jupyter notebook <strong>lane_finding.ipynb</strong> instead. The Jupyter notebook will process all videos in test_video and output the result in video_output. 
 
 ## Edge Detection
 There are many different algorithms in computer vision for detecting edges. For this mini project, I used the Canny edge detection algorithm to first identify edges in a video frame. Essentially this algorithm works by finding the derivative of pixel intensity, and identifies the pixels that have a sharp change in intensity. As a result, to use this algorihtm, I first converted the image into a gray scale image, so that all pixel values lie in the range of 0 - 255 (255 represents white, and 0 represents black). Here is an example of what the output from the Canny edge detection algorithm looks like:
