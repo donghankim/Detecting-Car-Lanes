@@ -6,14 +6,12 @@ import cv2
 import os, pdb
 
 def get_test_img():
-    path = '../media/undistorted_images/test6.jpg'
+    path = '../media/github/test_img.jpg'
     img = cv2.imread(path)
     return img
 
 def main():
     config = get_args()
-    test_img = get_test_img()
-    Thresh = Threshold(config, test_img)
     Cam = Camera(config)
     Cam.calibrate_camera()
 
@@ -21,6 +19,9 @@ def main():
     if config.undistort_test:
         Cam.undistort_all()
 
+    test_img = get_test_img()
+    Thresh = Threshold(config, test_img)
+    Thresh.combine()
 
 
 

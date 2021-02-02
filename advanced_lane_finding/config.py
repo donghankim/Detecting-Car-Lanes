@@ -17,6 +17,11 @@ def get_args():
     argp.add_argument('--github_save', type=str, default='../media/github/')
 
     # PARAMETERS
+    argp.add_argument('--ksize', type = int, default = 3)
+    argp.add_argument('--thresh_min', type = int, default = 20)
+    argp.add_argument('--thresh_max', type = int, default = 100)
+    argp.add_argument('--angle_min', type = float, default = 0.9)
+    argp.add_argument('--angle_max', type = float, default = 1.0)
 
 
     return argp.parse_args()
