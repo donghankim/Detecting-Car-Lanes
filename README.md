@@ -62,12 +62,12 @@ Here we will delve deeper into image gradient algorithms and more robust methods
 ### Sobel Filters
 In the first section of this project, I went over the Canny edge detection algorithm. I would say that the Canny edge detection algorithm is the industry standard when performing edge detections. However, there are times when you only want to examine the rate of change in intensity along the x or y axis. In other words, there are going to be cases where the gradient along the x-axis or y-axis is wanted individually. This is where the Sobel gradients come in handy. The Sobel filter helps us calculate the gradient along the x-axis and y-axis individually. This is achieved by convolving the image in question with a Sobel filter. The filter size can be any square size greater or equal to 3 (it also has to be an odd number). For the purposes of this project, I have used a 3-by-3 filter. Here are the results from the Sobel filters:
 
-<img src = "media/github/sobel_mag.png", alt = "Sobel filters", style = "text-align:center"/>
+<img src = "media/github/sobel_mag.png" alt = "Sobel filters" style = "text-align:center" />
 
 As you can see from the result above, the Sobel X filter identifies edges along the y-axis. In other words, it finds edges that run along the vertical. On the other hand, the Sobel Y filter identifies edges along the x-axis (horizontal lines). For the purpose of identifying lane lines, the Sobel X filter seems to be more useful than the Sobel Y filter, or for that matter the Canny edge detector.
 
 ### Gradient Direction
 Until now we have explored multiple methods for calculating the intensity of gradients. However, we can also calculate the direction of gradients. This is useful as we can caluculate the angle of our edges detected. In order to achieve this we simple take the magnitude of the gradient at each pixel. Since we can caluclate the corresponding x and y-axis gradients seperately, we can also use this to find the angle. We take the arctan(sobel_y/sobel_x) to find the angle of our gradient. Different parameters can be used to change the threshold capacity. Here are some results from using different angle combinations.
 
-<img src = "media/github/sobel_angle.png", alt = "Sobel Angles", style = "text-align:center"/>
+<img src = "media/github/sobel_angle.png" alt = "Sobel Angles" style = "text-align:center" />
 
