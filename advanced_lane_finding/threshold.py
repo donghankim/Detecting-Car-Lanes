@@ -4,27 +4,13 @@ import matplotlib.pyplot as plt
 import os, pdb
 
 class Threshold():
-    def __init__(self, config, img):
+    def __init__(self, config):
         self.config = config
-        self.img = img
-        gray = cv2.cvtColor(self.img, cv2.COLOR_RGB2GRAY)
-        self.gray_smoothed = cv2.GaussianBlur(gray, (3, 3), 0)
-        self.hls = cv2.cvtColor(self.img, cv2.COLOR_RGB2HLS)
-        self.S = self.hls[:, :, 2]
-
         self.sobelx = None
         self.sobely = None
         self.sobel_mag = None
         self.gradient_dir = None
         self.final_output = None
-
-        self.sobel_x()
-        self.sobel_y()
-        self.sobel_xy()
-        self.sobel_direction()
-        self.combine()
-        self.hls_thresholding()
-
 
     def sobel_x(self, thresh_min = None, thresh_max = None):
         sobelx = cv2.Sobel(self.gray_smoothed, cv2.CV_64F, 1, 0, ksize = self.config.ksize)
@@ -85,14 +71,24 @@ class Threshold():
         self.gradient_dir = binary_output
         #self.show_img(self.gradient_dir)
 
-    def combine(self):
+    def get_bin(self, img):
         """
         Combining the results from Sobel_x and the gradient magitude will
         probably produce the best results.
         """
+        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        self.gray_smoothed = cv2.GaussianBlur(gray, (3, 3), 0)
+        self.hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+        self.S = self.hls[:, :, 2]
+        self.sobel_x()
+        self.sobel_y()
+        self.sobel_xy()
+        self.sobel_direction()
         self.final_output = np.zeros_like(self.gradient_dir)
         self.final_output[(self.sobel_mag == 1) & (self.gradient_dir == 1)] = 1
         # self.show_img(self.final_output)
+    
+        return self.sobelx
 
 
     def show_img(self, img):
@@ -105,16 +101,19 @@ class Threshold():
         fig.subplots_adjust(hspace = 0.1, wspace = 0.2)
         axes.ravel()
 
+        """
         for i in range(len(img)):
             axes[i].imshow(img[i], cmap = 'gray')
+        """
 
-        axes[0].set_title("Sobel X")
-        axes[1].set_title("Sobel Y")
-        axes[2].set_title("Sobel Magnitude")
-        plt.savefig(os.path.join(self.config.github_save, filename))
+        axes[0].imshow(img[0])
+        axes[1].imshow(img[1])
+        axes[2].imshow(img[2], cmap = 'gray')
+        axes[0].set_title("Original")
+        axes[1].set_title("Warped")
+        axes[2].set_title("Binary Output")
+        #plt.savefig(os.path.join(self.config.github_save, filename))
+        plt.show()
 
 
-"""
-Shit to do:
-Write up github readme
-"""
+

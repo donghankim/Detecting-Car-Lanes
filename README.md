@@ -4,7 +4,7 @@ This is a project for detecting lane lines using computer vision.
 ## Overview
 This project explores a simple approach to identifying car lanes from a dashcam video. The first half of this README file contains explanations for detetcting lane lines using a very naiive and simple approach. The second part includes explanations for detetcting lane lines using more advanced computer vision techniques. The code for the first half of this repository is contained in the "lane_finding" folder, whilst the code for the more advanced lane finding algorithm is stored in the "advanced_lane_finding" folder.
 
-![Result GIF](media/github/output_gif.gif)
+![Result GIF](media/github/output_simple.gif)
 
 While most use sophisticated deep learning algorithms to identify car lanes, as part of the Udacity self-driving car engineer nano degree program, I was able to use simple computer vision alrogithms to detect car lanes from a dashcam video. This process was achieved in 4 steps: <strong>edge detection, ROI bounding box, Hough transform and line interpolation.</strong> Each step is explained in detail below.
 
