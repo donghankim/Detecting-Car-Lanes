@@ -23,5 +23,9 @@ def get_args():
     argp.add_argument('--angle_min', type = float, default = 0.9)
     argp.add_argument('--angle_max', type = float, default = 1.0)
 
+    argp.add_argument('--windows_num', type = int, default = 9)
+    argp.add_argument('--window_margin', type = int, default = 100)
+    argp.add_argument('--min_pix', type = int, default = 50)
+
 
     return argp.parse_args()

@@ -71,3 +71,20 @@ Until now we have explored multiple methods for calculating the intensity of gra
 
 <img src = "media/github/sobel_angle.png" alt = "Sobel Angles" style = "text-align:center" />
 
+### Camera Calibration
+Camera calibration is an important step in computer vision. Images from cameras are never perfect, and always needs to be calibrated before applying any of the algorithms mentioned thus far. The physics behind why cameras need to be calibrated can be found [here.](https://medium.com/analytics-vidhya/camera-calibration-theory-and-implementation-b253dad449fb) (keep in mind this is a lenghtly article). The camera you use for your projects are most defenitely going to be different to the camera I used for this project. Therefore, you should follow this step and calibrate your own camera. We can use opencv's built-in function to find the [R|t] matrix and distortion coefficients. The distortion coefficients are all we need to undistort our images, since we are not yet dealing with space transformations.
+
+<img src = "media/github/undistort_example.png" alt = "Sobel Angles" style = "text-align:center" />
+
+### Perspective Transformation
+Perpective transform essentially allows us to artificially view an image from a different angle. In some luxury cars, when you park the car the car will show you a birds-eye view of the car. This is sometimes called "surround view". This technology is also using perspective transform! As we saw in the simple lane detection pipeline, trying to find edges from the dashcam image directly produced a lot of noise. To combat this, we can actually view the dashcam image, as if we are flying over it. Here is the what the result of perspective transformation looks like.
+
+<img src = "media/github/perspective.png" alt = "Sobel Angles" style = "text-align:center" />
+
+We can once again use opencv's built-in function to find the matrix M that transforms our image into a birds-eye view image. The trapezoid shown in the middle is our ROI (ROI was introduced in the simple lane detection part too). This is basically the region we want to see from a birds-eye viewpoint. Once we obtain this transformed image, we can apply any well known edge detection algorithm and identify our lane lines! Since our transformed image only contains lane lines, not only will it be easy to identify the lanes, but it will also have much less noise.
+
+### Lane Line Identification
+
+
+
+

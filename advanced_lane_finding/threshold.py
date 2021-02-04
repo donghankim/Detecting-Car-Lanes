@@ -24,7 +24,7 @@ class Threshold():
             binary_output[(uintSobel >= thresh_min) & (uintSobel <= thresh_max)] = 1
 
         self.sobelx = binary_output
-        # self.show_img(binary_output)
+
 
     def sobel_y(self, thresh_min = None, thresh_max = None):
         sobely = cv2.Sobel(self.gray_smoothed, cv2.CV_64F, 0, 1, ksize = self.config.ksize)
@@ -38,7 +38,7 @@ class Threshold():
             binary_output[(uintSobel >= thresh_min) & (uintSobel <= thresh_max)] = 1
 
         self.sobely = binary_output
-        # self.show_img(binary_output)
+
 
     def sobel_xy(self, thresh_min = None, thresh_max = None):
         sobelx = cv2.Sobel(self.gray_smoothed, cv2.CV_64F, 1, 0, ksize = self.config.ksize)
@@ -69,7 +69,7 @@ class Threshold():
         else:
             binary_output[(angle >= angle_min) & (angle <= angle_max)] = 1
         self.gradient_dir = binary_output
-        #self.show_img(self.gradient_dir)
+
 
     def get_bin(self, img):
         """
@@ -86,34 +86,8 @@ class Threshold():
         self.sobel_direction()
         self.final_output = np.zeros_like(self.gradient_dir)
         self.final_output[(self.sobel_mag == 1) & (self.gradient_dir == 1)] = 1
-        # self.show_img(self.final_output)
-    
+
+
         return self.sobelx
-
-
-    def show_img(self, img):
-        plt.imshow(img, cmap = 'gray')
-        plt.show()
-
-    # for documentation, must send 3 images
-    def save_fig(self, filename, *img):
-        fig, axes = plt.subplots(1, 3, figsize = (16,8))
-        fig.subplots_adjust(hspace = 0.1, wspace = 0.2)
-        axes.ravel()
-
-        """
-        for i in range(len(img)):
-            axes[i].imshow(img[i], cmap = 'gray')
-        """
-
-        axes[0].imshow(img[0])
-        axes[1].imshow(img[1])
-        axes[2].imshow(img[2], cmap = 'gray')
-        axes[0].set_title("Original")
-        axes[1].set_title("Warped")
-        axes[2].set_title("Binary Output")
-        #plt.savefig(os.path.join(self.config.github_save, filename))
-        plt.show()
-
 
 
