@@ -69,33 +69,3 @@ class Camera():
         return wraped
 
 
-"""
-FOR GITHUB DOCUMENTATION
-
-        test_img = cv2.imread("../media/undistorted_images/test_git.jpg")
-        line_img = cv2.imread("../media/undistorted_images/test_git.jpg")
-        test_img = cv2.cvtColor(test_img, cv2.COLOR_BGR2RGB)
-        line_img = cv2.cvtColor(line_img, cv2.COLOR_BGR2RGB)
-        width = test_img.shape[1]
-        height = test_img.shape[0]
-
-        src_pts = np.array([[0, height], [width // 2 - 76, height * 0.625], [width // 2 + 76, height * 0.625], [width, height]], np.float32)
-        dst_pts = np.array([[0, height], [100, 0], [width-100, 0], [width, height]], np.float32)
-        M = cv2.getPerspectiveTransform(src_pts, dst_pts)
-        wraper = cv2.warpPerspective(test_img, M, (width, height), flags = cv2.INTER_LINEAR)
-        cv2.polylines(line_img, [src_pts.astype(np.int32)], True, (0, 255, 255), 3)
-
-        fig, axes = plt.subplots(1,3, figsize = (16,8))
-        fig.subplots_adjust(hspace=0.1, wspace=0.2)
-        axes.ravel()
-
-        axes[0].imshow(test_img)
-        axes[0].set_title("Original Image")
-        axes[1].imshow(line_img)
-        axes[1].set_title("ROI")
-        axes[2].imshow(wraper)
-        axes[2].set_title("Perspective Transform")
-
-        plt.savefig(os.path.join(self.config.github_save, "testtt.png"))
-
-"""

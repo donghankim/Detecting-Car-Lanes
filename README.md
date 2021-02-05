@@ -84,7 +84,8 @@ Perpective transform essentially allows us to artificially view an image from a 
 We can once again use opencv's built-in function to find the matrix M that transforms our image into a birds-eye view image. The trapezoid shown in the middle is our ROI (ROI was introduced in the simple lane detection part too). This is basically the region we want to see from a birds-eye viewpoint. Once we obtain this transformed image, we can apply any well known edge detection algorithm and identify our lane lines! Since our transformed image only contains lane lines, not only will it be easy to identify the lanes, but it will also have much less noise.
 
 ### Lane Line Identification
+Using our perspective transformed lane lines, we can apply any edge detectection algorithm to obtain a binary thresholded output. Using this output, the first we should do is identify where in our binary output the lanes lines exist. There will always be two lane lines, and since our perspective transform (warped) output contain little noise, its very easy for us humans to understand where the lane lines are. However, computers are not as smart as we are. Therefore, we need a method for telling the computer where the lane lines are. One approach to this problem is by using a histogram analysis to see which columns contains the most "activated" pixels. We are not interested in the rows, since lane lines are vertical and not horizontal.
 
+<img src = "media/github/histogram.png" alt = "Histogram Analysis" style = "text-align:center" />
 
-
-
+Our histogram shows us

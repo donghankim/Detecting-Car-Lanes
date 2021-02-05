@@ -7,18 +7,30 @@ class Lanes():
     def __init__(self, config):
         self.config = config
         self.binary_img = None
+        self.y_coords = None
         self.left_base = None
         self.right_base = None
+        self.left_coef = None
+        self.right_coef = None
         self.left_pts = []
         self.right_pts = []
+        self.left_fit = []
+        self.right_fit = []
+
+        self.left_curvature = None
+        self.right_curvature = None
+        self.ym_per_pix = 30/720
+        self.xm_per_pix = 3.7/700
 
     def find_starting_point(self, binary_img):
         self.binary_img = binary_img
+        self.y_coords = np.linspace(0, self.binary_img.shape[0]-1, self.binary_img.shape[0])
         bottom_half = binary_img[binary_img.shape[0]//2:, :]
         histogram = np.sum(bottom_half, axis=0)
         midpoint = np.int(histogram.shape[0]//2)
         self.left_base = np.argmax(histogram[:midpoint])
         self.right_base = np.argmax(histogram[midpoint:]) + midpoint
+
 
     def sliding_window(self):
         window_height = np.int(self.binary_img.shape[0]//self.config.windows_num)
@@ -31,35 +43,41 @@ class Lanes():
         left_lane_xy = []
         right_lane_xy = []
 
-        for window in range(self.config.windows_num):
-            win_y_low = self.binary_img.shape[0] - (window+1)*window_height
-            win_y_high = self.binary_img.shape[0] - window*window_height
-            win_xleft_low = leftx_current - self.config.window_margin
-            win_xleft_high = leftx_current + self.config.window_margin
-            win_xright_low = rightx_current - self.config.window_margin
-            win_xright_high = rightx_current + self.config.window_margin
+        if not self.left_fit and not self.right_fit:
+            for window in range(self.config.windows_num):
+                win_y_low = self.binary_img.shape[0] - (window+1)*window_height
+                win_y_high = self.binary_img.shape[0] - window*window_height
+                win_xleft_low = leftx_current - self.config.window_margin
+                win_xleft_high = leftx_current + self.config.window_margin
+                win_xright_low = rightx_current - self.config.window_margin
+                win_xright_high = rightx_current + self.config.window_margin
 
-            # Identify the nonzero pixels in x and y within the window
-            good_left_xy = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) &
-                            (nonzerox >= win_xleft_low) & (nonzerox < win_xleft_high)).nonzero()[0]
-            good_right_xy = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) &
-                            (nonzerox >= win_xright_low) & (nonzerox < win_xright_high)).nonzero()[0]
+                # Identify the nonzero pixels in x and y within the window
+                good_left_xy = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) &
+                                (nonzerox >= win_xleft_low) & (nonzerox < win_xleft_high)).nonzero()[0]
+                good_right_xy = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) &
+                                (nonzerox >= win_xright_low) & (nonzerox < win_xright_high)).nonzero()[0]
 
-            left_lane_xy.append(good_left_xy)
-            right_lane_xy.append(good_right_xy)
+                left_lane_xy.append(good_left_xy)
+                right_lane_xy.append(good_right_xy)
 
-            # If you found > minpix pixels, recenter next window on their mean position
-            if len(good_left_xy) > self.config.min_pix:
-                leftx_current = np.int(np.mean(nonzerox[good_left_xy]))
-            if len(good_right_xy) > self.config.min_pix:
-                rightx_current = np.int(np.mean(nonzerox[good_right_xy]))
+                # If you found > minpix pixels, recenter next window on their mean position
+                if len(good_left_xy) > self.config.min_pix:
+                    leftx_current = np.int(np.mean(nonzerox[good_left_xy]))
+                if len(good_right_xy) > self.config.min_pix:
+                    rightx_current = np.int(np.mean(nonzerox[good_right_xy]))
 
-        # Concatenate the arrays of indices (previously was a list of lists of pixels)
-        try:
-            left_lane_xy = np.concatenate(left_lane_xy)
-            right_lane_xy = np.concatenate(right_lane_xy)
-        except ValueError:
-            pass
+            # Concatenate the arrays of indices (previously was a list of lists of pixels)
+            try:
+                left_lane_xy = np.concatenate(left_lane_xy)
+                right_lane_xy = np.concatenate(right_lane_xy)
+            except ValueError:
+                pass
+
+        # In the case we already have a fitted lanes
+        else:
+            left_lane_xy = ((nonzerox > (self.left_fit[0]*(nonzeroy**2) + self.left_fit[1]*nonzeroy + self.left_fit[2] - margin)) & (nonzerox < (self.left_fit[0]*(nonzeroy**2) + self.left_fit[1]*nonzeroy + self.left_fit[2] + margin)))
+            right_lane_xy = ((nonzerox > (self.right_fit[0]*(nonzeroy**2) + self.right_fit[1]*nonzeroy +self.right_fit[2] - margin)) & (nonzerox < (self.right_fit[0]*(nonzeroy**2) + self.right_fit[1]*nonzeroy + self.right_fit[2] + margin)))
 
         leftx = nonzerox[left_lane_xy]
         lefty = nonzeroy[left_lane_xy]
@@ -80,9 +98,29 @@ class Lanes():
 
         self.left_pts = np.array(self.left_pts, np.int32)
         self.right_pts = np.array(self.right_pts, np.int32)
+        pdb.set_trace()
+
 
     def fit_poly_lines(self):
-        pass
+        self.left_coef = np.polyfit(self.left_pts[:,1], self.left_pts[:,0], 2)
+        self.right_coef = np.polyfit(self.right_pts[:,1], self.right_pts[:,0], 2)
+
+        try:
+            self.left_fitx = self.left_coef[0]*self.y_coords**2 + self.left_coef[1]*self.y_coords + self.left_coef[2]
+            self.right_fitx = self.right_coef[0]*self.y_coords**2 + self.right_coef[1]*self.y_coords + self.right_coef[2]
+        except TypeError:
+            # Avoids an error if `left` and `right_fit` are still none or incorrect
+            print('The function failed to fit a line!')
+            self.left_fitx = 1*self.y_coords**2 + 1*self.y_coords
+            self.right_fitx = 1*self.y_coords**2 + 1*self.y_coords
+
+    def get_curvature(self):
+        self.left_curvature = ((1+(2*self.left_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.left_coef[1])**2)**(3/2))/np.absolute(2*self.left_coef[0])
+        self.right_curvature = ((1+(2*self.right_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.right_coef[1])**2)**(3/2))/np.absolute(2*self.right_coef[0])
+
+
+
+
 
 
 
