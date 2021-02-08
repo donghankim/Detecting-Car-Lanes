@@ -24,7 +24,7 @@ class Funcs():
 
         return image
 
-    # for documentation, must send 3 images
+    # for documentation, must send 2 images
     def save_fig(self, filename, *img):
         fig, axes = plt.subplots(1, len(img), figsize=(16, 8))
         fig.subplots_adjust(hspace=0.1, wspace=0.2)

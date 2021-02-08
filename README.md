@@ -4,16 +4,29 @@ This is a project for detecting lane lines using computer vision.
 ## Overview
 This project explores a simple approach to identifying car lanes from a dashcam video. The first half of this README file contains explanations for detetcting lane lines using a very naiive and simple approach. The second part includes explanations for detetcting lane lines using more advanced computer vision techniques. The code for the first half of this repository is contained in the "lane_finding" folder, whilst the code for the more advanced lane finding algorithm is stored in the "advanced_lane_finding" folder.
 
-![Result GIF](media/github/output_simple.gif)
+![simple result GIF](media/github/output_simple.gif "Simple Detection") ![advanced result GIF](media/github/advanced.gif "Advanced Detection")
 
 While most use sophisticated deep learning algorithms to identify car lanes, as part of the Udacity self-driving car engineer nano degree program, I was able to use simple computer vision alrogithms to detect car lanes from a dashcam video. This process was achieved in 4 steps: <strong>edge detection, ROI bounding box, Hough transform and line interpolation.</strong> Each step is explained in detail below.
 
-## Installation
+## Installation & Run
 In order to run my code, you will first have to install all of the dependancies. I highly recomend using a virtual enviornment.
 ```python3
 pip install -r requirements.txt
 ```
 The python file <strong>lane_finding.py</strong> contains code that will allow you to run my algorithm on still images. The output will automatically be saved in the image_output folder. If you have your own video you want to run using my algorithm, then use the jupyter notebook <strong>lane_finding.ipynb</strong> instead. The Jupyter notebook will process all videos in test_video and output the result in video_output.
+
+The folder "advanced_lane_finding" contains all of the code needed to run the advanced lane finding algorithm. The driver file is called <strong>main.py</strong>. By default, the code will process all of the videos saved in "media/test_video" and save the output video files in the folder "../video_output". I purposely did not upload the final video output, so make sure you create an empty folder called "video_output". If you want to change some of the parameters, you can use argument tags as shown in the example below.
+
+```python3
+# To run driver code
+python main.py
+
+# for undistortion test (only need to run once)
+python main.py --undistort_test
+
+# sliding window size of 200, and kernel size of 5
+python main.py --window_margin 200 --ksize 5
+```
 
 ## Simple Lane Finding
 Here I will introduced some basic computer vision techniques used for detecting lane lines. Although these algorithms may seem basic, these algorithms are the building blocks for using/creating more robust and advanced computer vision algorithms. All the explanations/code presented here can be found within the "lane_finding" folder.
@@ -76,7 +89,7 @@ Camera calibration is an important step in computer vision. Images from cameras 
 
 <img src = "media/github/undistort_example.png" alt = "Sobel Angles" style = "text-align:center" />
 
-### Perspective Transformation
+### Perspective Projection
 Perpective transform essentially allows us to artificially view an image from a different angle. In some luxury cars, when you park the car the car will show you a birds-eye view of the car. This is sometimes called "surround view". This technology is also using perspective transform! As we saw in the simple lane detection pipeline, trying to find edges from the dashcam image directly produced a lot of noise. To combat this, we can actually view the dashcam image, as if we are flying over it. Here is the what the result of perspective transformation looks like.
 
 <img src = "media/github/perspective.png" alt = "Sobel Angles" style = "text-align:center" />

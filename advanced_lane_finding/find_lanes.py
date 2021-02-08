@@ -10,14 +10,10 @@ class Lanes():
         self.y_coords = None
         self.left_base = None
         self.right_base = None
-        self.left_coef = None
-        self.right_coef = None
         self.left_pts = []
         self.right_pts = []
-        self.left_fit = []
-        self.right_fit = []
-        self.left_fitx = []
-        self.right_fitx = []
+        self.left_coef = np.array([])
+        self.right_coef = np.array([])
 
         self.left_curvature = None
         self.right_curvature = None
@@ -45,7 +41,7 @@ class Lanes():
         left_lane_xy = []
         right_lane_xy = []
 
-        if not self.left_fit and not self.right_fit:
+        if self.left_coef.size == 0 and self.right_coef.size == 0:
             for window in range(self.config.windows_num):
                 win_y_low = self.binary_img.shape[0] - (window+1)*window_height
                 win_y_high = self.binary_img.shape[0] - window*window_height
@@ -78,8 +74,8 @@ class Lanes():
 
         # In the case we already have a fitted lanes
         else:
-            left_lane_xy = ((nonzerox > (self.left_fit[0]*(nonzeroy**2) + self.left_fit[1]*nonzeroy + self.left_fit[2] - margin)) & (nonzerox < (self.left_fit[0]*(nonzeroy**2) + self.left_fit[1]*nonzeroy + self.left_fit[2] + margin)))
-            right_lane_xy = ((nonzerox > (self.right_fit[0]*(nonzeroy**2) + self.right_fit[1]*nonzeroy +self.right_fit[2] - margin)) & (nonzerox < (self.right_fit[0]*(nonzeroy**2) + self.right_fit[1]*nonzeroy + self.right_fit[2] + margin)))
+            left_lane_xy = ((nonzerox > (self.left_coef[0]*(nonzeroy**2) + self.left_coef[1]*nonzeroy + self.left_coef[2] - self.config.window_margin)) & (nonzerox < (self.left_coef[0]*(nonzeroy**2) + self.left_coef[1]*nonzeroy + self.left_coef[2] + self.config.window_margin)))
+            right_lane_xy = ((nonzerox > (self.right_coef[0]*(nonzeroy**2) + self.right_coef[1]*nonzeroy +self.right_coef[2] - self.config.window_margin)) & (nonzerox < (self.right_coef[0]*(nonzeroy**2) + self.right_coef[1]*nonzeroy + self.right_coef[2] + self.config.window_margin)))
 
         leftx = nonzerox[left_lane_xy]
         lefty = nonzeroy[left_lane_xy]
@@ -98,37 +94,33 @@ class Lanes():
             new_point = [x, y]
             self.right_pts.append(new_point)
 
-        self.left_pts = np.array(self.left_pts, np.int32)
-        self.right_pts = np.array(self.right_pts, np.int32)
-
 
     def fit_poly_lines(self):
-        self.left_coef = np.polyfit(self.left_pts[:,1], self.left_pts[:,0], 2)
-        self.right_coef = np.polyfit(self.right_pts[:,1], self.right_pts[:,0], 2)
+        np_left_pts = np.array(self.left_pts)
+        np_right_pts = np.array(self.right_pts)
+        self.left_coef = np.polyfit(np_left_pts[:,1], np_left_pts[:,0], 2)
+        self.right_coef = np.polyfit(np_right_pts[:,1], np_right_pts[:,0], 2)
 
         try:
-            self.left_fitx = self.left_coef[0]*self.y_coords**2 + self.left_coef[1]*self.y_coords + self.left_coef[2]
-            self.right_fitx = self.right_coef[0]*self.y_coords**2 + self.right_coef[1]*self.y_coords + self.right_coef[2]
+            left_fitx = self.left_coef[0]*self.y_coords**2 + self.left_coef[1]*self.y_coords + self.left_coef[2]
+            right_fitx = self.right_coef[0]*self.y_coords**2 + self.right_coef[1]*self.y_coords + self.right_coef[2]
         except TypeError:
             # Avoids an error if `left` and `right_fit` are still none or incorrect
             print('The function failed to fit a line!')
-            self.left_fitx = 1*self.y_coords**2 + 1*self.y_coords
-            self.right_fitx = 1*self.y_coords**2 + 1*self.y_coords
+            left_fitx = 1*self.y_coords**2 + 1*self.y_coords
+            right_fitx = 1*self.y_coords**2 + 1*self.y_coords
 
         # update points
         self.left_pts = []
         self.right_pts = []
         for i in range(len(self.y_coords)):
-            left_x = int(self.left_fitx[i])
-            right_x = int(self.right_fitx[i])
+            left_x = int(left_fitx[i])
+            right_x = int(right_fitx[i])
             y = self.y_coords[i]
             left = [left_x, y]
             right = [right_x, y]
             self.left_pts.append(left)
             self.right_pts.append(right)
-
-        self.left_pts = np.array(self.left_pts, dtype = np.int32)
-        self.right_pts = np.array(self.right_pts, dtype = np.int32)
 
     def get_curvature(self):
         self.left_curvature = ((1+(2*self.left_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.left_coef[1])**2)**(3/2))/np.absolute(2*self.left_coef[0])

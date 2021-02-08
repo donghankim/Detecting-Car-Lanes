@@ -13,6 +13,8 @@ def get_args():
     argp.add_argument('--calibrate_dir', type=str, default='../media/camera_cal/')
     argp.add_argument('--test_img', type=str, default='../media/test_images/')
     argp.add_argument('--test_vid', type=str, default='../media/test_video/')
+    argp.add_argument('--vid_name', type=str, default='output.png')
+    argp.add_argument('--vid_save', type=str, default='../video_output/')
     argp.add_argument('--undistorted_save', type=str, default='../media/undistorted_images/')
     argp.add_argument('--github_save', type=str, default='../media/github/')
 
