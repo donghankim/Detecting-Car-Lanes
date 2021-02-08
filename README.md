@@ -96,7 +96,9 @@ Our histogram shows us that the highest intensity (or the most concentrated) col
 
 However, we cant just end here since we want exactly two lines for our lanes. Right now, because of the noise from the lanes, it looks as if we have multiple lanes. Since we have the x and y values from the sliding window algorithm, we can use any polynomial fitting algorithm to obtain a curved equation for both the left and right lane. Road lanes will never be wiggly when looking from the view point we have, and thus the order of our polynomial can be 2 (a quadratic eqaution show be adequate). Once we fit our left and right lane eqautions, we can plot it and see if it is reasonable.
 
-<img src = "media/github/final_lanes.png" alt = "Lane line fitted output" align="center" width = "500" height = "300"/>
+<p align = "center">
+    <img src = "media/github/final_lanes.png" alt = "Lane line fitted output" width = "500" height = "300"/>
+</p>
 
 ### Inverse Perspective Projection
 Since we have our lane eqautions, the only thing to do now is to draw our lanes. However, remember that we used perspective projection, and we have been working with identifying our lane lines from this view. We now need to revert back to the original view to see our final output. If we dont revert back to our original view, this is the output we would get:
@@ -106,6 +108,8 @@ Since we have our lane eqautions, the only thing to do now is to draw our lanes.
 This is not what we want. However, once we perfom the inverse projection matrix, we get the final output that we desire:
 
 <img src = "media/github/adv_result.png" alt = "Warped lanes" style = "text-align:center" />
+
+This completes the entire pipeline for processing each frame. There are some details I skipped, however, if you go over my code it shouldnt be that difficult to follow through. Applying this pipeline on a real video footage gives you the results similar to the one I got (the .gif file you see at the top).
 
 
 
