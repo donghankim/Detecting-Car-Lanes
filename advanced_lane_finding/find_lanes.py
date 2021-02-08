@@ -16,6 +16,8 @@ class Lanes():
         self.right_pts = []
         self.left_fit = []
         self.right_fit = []
+        self.left_fitx = []
+        self.right_fitx = []
 
         self.left_curvature = None
         self.right_curvature = None
@@ -98,7 +100,6 @@ class Lanes():
 
         self.left_pts = np.array(self.left_pts, np.int32)
         self.right_pts = np.array(self.right_pts, np.int32)
-        pdb.set_trace()
 
 
     def fit_poly_lines(self):
@@ -114,9 +115,38 @@ class Lanes():
             self.left_fitx = 1*self.y_coords**2 + 1*self.y_coords
             self.right_fitx = 1*self.y_coords**2 + 1*self.y_coords
 
+        # update points
+        self.left_pts = []
+        self.right_pts = []
+        for i in range(len(self.y_coords)):
+            left_x = int(self.left_fitx[i])
+            right_x = int(self.right_fitx[i])
+            y = self.y_coords[i]
+            left = [left_x, y]
+            right = [right_x, y]
+            self.left_pts.append(left)
+            self.right_pts.append(right)
+
+        self.left_pts = np.array(self.left_pts, dtype = np.int32)
+        self.right_pts = np.array(self.right_pts, dtype = np.int32)
+
     def get_curvature(self):
         self.left_curvature = ((1+(2*self.left_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.left_coef[1])**2)**(3/2))/np.absolute(2*self.left_coef[0])
         self.right_curvature = ((1+(2*self.right_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.right_coef[1])**2)**(3/2))/np.absolute(2*self.right_coef[0])
+
+
+    def get_color_warp(self):
+        warp_zero = np.zeros_like(self.binary_img).astype(np.uint8)
+        color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
+
+        y_coords = np.linspace(10, self.binary_img.shape[0], self.binary_img.shape[0]-10+1)
+        left = self.left_coef[0]*y_coords**2 + self.left_coef[1]*y_coords + self.left_coef[2]
+        right = self.right_coef[0]*y_coords**2 + self.right_coef[1]*y_coords + self.right_coef[2]
+        plot_left = np.array([np.transpose(np.vstack([left, y_coords]))])
+        plot_right = np.array([np.flipud(np.transpose(np.vstack([right, y_coords])))])
+        pts = np.hstack((plot_left, plot_right))
+        cv2.fillPoly(color_warp, np.int_([pts]), (0, 255, 0))
+        return color_warp
 
 
 

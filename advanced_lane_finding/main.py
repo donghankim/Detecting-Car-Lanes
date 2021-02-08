@@ -28,9 +28,10 @@ def main():
     lane.sliding_window()
     lane.fit_poly_lines()
     lane.get_curvature()
-    #pdb.set_trace()
-    pts = np.hstack((lane.left_pts, lane.right_pts))
-    final = util.color_poly(img, pts)
+
+    color_warp = lane.get_color_warp()
+    lanes_colored = cv2.warpPerspective(color_warp, cam.perspective_inv, (color_warp.shape[1], color_warp.shape[0]))
+    result = cv2.addWeighted(test_img, 1, lanes_colored, 0.3, 0)
 
 
 
@@ -38,9 +39,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-"""
-Draw on output
-Process on video
-Finish readme
-"""

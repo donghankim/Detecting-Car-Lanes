@@ -11,6 +11,8 @@ class Camera():
         self.mtx = None
         self.dist = None
         self.ret = False
+        self.perspective_M = None
+        self.perspective_inv = None
 
     def calibrate_camera(self):
         image_paths = glob.glob(self.config.calibrate_dir + 'calibration*.jpg')
@@ -64,8 +66,9 @@ class Camera():
         src_pts = np.array([[0, height], [width // 2 - 76, height * 0.625], [width // 2 + 76, height * 0.625], [width, height]], np.float32)
         dst_pts = np.array([[0, height], [100, 0], [width-100, 0], [width, height]], np.float32)
 
-        M = cv2.getPerspectiveTransform(src_pts, dst_pts)
-        wraped = cv2.warpPerspective(img, M, (width, height), flags = cv2.INTER_LINEAR)
+        self.perspective_M = cv2.getPerspectiveTransform(src_pts, dst_pts)
+        self.perspective_inv = cv2.getPerspectiveTransform(dst_pts, src_pts)
+        wraped = cv2.warpPerspective(img, self.perspective_M, (width, height), flags = cv2.INTER_LINEAR)
         return wraped
 
 

@@ -14,7 +14,8 @@ class Funcs():
         return img
 
     def show_img(self, img):
-        plt.imshow(img, cmap='gray')
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        plt.imshow(img)
         plt.show()
 
     def draw_poly_lines(self, img, *pts):
@@ -23,22 +24,19 @@ class Funcs():
 
         return image
 
-    def color_poly(self, img, pts):
-        cv2.fillPoly(img, pts, (0, 255, 0))
-        return img
-
     # for documentation, must send 3 images
     def save_fig(self, filename, *img):
-        fig, axes = plt.subplots(1, 3, figsize=(16, 8))
+        fig, axes = plt.subplots(1, len(img), figsize=(16, 8))
         fig.subplots_adjust(hspace=0.1, wspace=0.2)
         axes.ravel()
+        img1 = cv2.cvtColor(img[0], cv2.COLOR_BGR2RGB)
+        img2 = cv2.cvtColor(img[1], cv2.COLOR_BGR2RGB)
+        axes[0].imshow(img1)
+        axes[1].imshow(img2)
 
-        axes[0].imshow(img[0])
-        axes[1].imshow(img[1], cmap = 'gray')
-        axes[2].imshow(img[2])
-        axes[0].set_title("Warped")
-        axes[1].set_title("Binary Output")
-        axes[2].set_title("Lanes Output")
+        axes[0].set_title("Warped Lanes")
+        axes[1].set_title("Output")
+
         plt.savefig(os.path.join(self.config.github_save, filename))
         #plt.show()
 
