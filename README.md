@@ -5,8 +5,14 @@ This is a project for detecting lane lines using computer vision (completed as p
 This project explores a simple approach to identifying car lanes from a dashcam video. The first half of this README file contains explanations for detetcting lane lines using a very naiive and simple approach. The second part includes explanations for detetcting lane lines using more advanced computer vision techniques. The code for the first half of this repository is contained in the "lane_finding" folder, whilst the code for the more advanced lane finding algorithm is stored in the "advanced_lane_finding" folder.
 
 <p align="center">
-    <img src="media/github/output_simple.gif" width="300" height="300"/>
-    <img src="media/github/advanced.gif" width="300" height="300"/>
+    <figure>
+        <img src="media/github/output_simple.gif" width="400" height="300"/>
+        <figcaption>Simple Lane Detection</figcaption>
+    </figure>
+    <figure>
+        <img src="media/github/advanced.gif" width="400" height="300"/>
+        <figcaption>Advanced Lane Detection</figcaption>
+    </figure>
 </p>
 
 ## Installation & Run
