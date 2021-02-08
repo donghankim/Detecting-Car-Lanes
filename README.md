@@ -86,7 +86,9 @@ We can once again use opencv's built-in function to find the matrix M that trans
 ### Lane Line Identification
 Using our perspective transformed lane lines, we can apply any edge detectection algorithm to obtain a binary thresholded output. Using this output, the first we should do is identify where in our binary output the lanes lines exist. There will always be two lane lines, and since our perspective transform (warped) output contain little noise, its very easy for us humans to understand where the lane lines are. However, computers are not as smart as we are. Therefore, we need a method for telling the computer where the lane lines are. One approach to this problem is by using a histogram analysis to see which columns contains the most "activated" pixels. We are not interested in the rows, since lane lines are vertical and not horizontal.
 
-<img src = "media/github/histogram.png" alt = "Histogram Analysis" align="center" width = "500" height = "300" />
+<p align = "center">
+    <img src = "media/github/histogram.png" alt = "Histogram Analysis" width = "500" height = "300" />
+</p>
 
 Our histogram shows us that the highest intensity (or the most concentrated) columns are approixmately 180 and 820. This obviously means out left lane is near the 180 column, and the right lane is near the 820 column. Using this, we can start a sliding window algorihtm, where we define a window (box) and slide over the image to idenitfy all of the pixels that have an active intensity. In this case, the active intensiy is 1 since we are working with a grayscale image. The red paint on the right image below shows all of the points obtained from using the sliding window algorihtm. The red points are the points we managed to detect.
 
