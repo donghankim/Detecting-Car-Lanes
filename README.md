@@ -6,11 +6,11 @@ This project explores a simple approach to identifying car lanes from a dashcam 
 
 <p align="center">
     <figure>
-        <img src="media/github/output_simple.gif" width="350" height="300"/>
+        <img src="media/github/output_simple.gif" width="200" height="300"/>
         <figcaption>Simple Lane Detection</figcaption>
     </figure>
     <figure>
-        <img src="media/github/advanced.gif" width="350" height="300"/>
+        <img src="media/github/advanced.gif" width="200" height="300"/>
         <figcaption>Advanced Lane Detection</figcaption>
     </figure>
 </p>
