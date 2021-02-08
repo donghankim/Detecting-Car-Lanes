@@ -2,7 +2,7 @@
 This is a project for detecting lane lines using computer vision (completed as part of Udacity self-driving car engineer nanodegree program).
 
 ## Overview
-This project explores a simple approach to identifying car lanes from a dashcam video. The first half of this README file contains explanations for detetcting lane lines using a very naiive and simple approach. The second part includes explanations for detetcting lane lines using more advanced computer vision techniques. The code for the first half of this repository is contained in the "lane_finding" folder, whilst the code for the more advanced lane finding algorithm is stored in the "advanced_lane_finding" folder. The gif file on the left is the result from the simple approach. The gif file on the right is the result from the advanced approach. 
+This project explores a simple approach to identifying car lanes from a dashcam video. The first half of this README file contains explanations for detetcting lane lines using a very naiive and simple approach. The second part includes explanations for detetcting lane lines using more advanced computer vision techniques. The code for the first half of this repository is contained in the "lane_finding" folder, whilst the code for the more advanced lane finding algorithm is stored in the "advanced_lane_finding" folder. The gif file on the left is the result from the simple approach. The gif file on the right is the result from the advanced approach.
 
 <p align="center">
     <img src="media/github/output_simple.gif" width="400" height="300"/>
@@ -41,7 +41,7 @@ left image: original image. <br/>
 middle image: grayscale image (after Gaussian blur). <br/>
 right image: Canny edge detection output.
 
-## ROI (Bounding Box)
+### ROI (Bounding Box)
 As you can see from the Canny edge output, we have a lot of edges that we are not interested in. The goal of this project is to find the car lanes, so we are not interested in any edges that do not represent the car lanes. Therefore, we can apply a mask to capture the region of the image that we are interested in. This makes sense as the location of the car lanes will not change from frame to frame. The vertecies corresponding to the bounding box are hard coded. Here is what the ouput looks like after the bounding box has been applied:
 
 <img src = "media/github/roi.png" alt = "ROI output." style="text-align:center" />
