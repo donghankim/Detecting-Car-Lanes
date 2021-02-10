@@ -17,6 +17,8 @@ class Lanes():
 
         self.left_curvature = None
         self.right_curvature = None
+        self.camera_position = None
+        self.offset = None
         self.ym_per_pix = 30/720
         self.xm_per_pix = 3.7/700
 
@@ -125,8 +127,11 @@ class Lanes():
     def get_curvature(self):
         self.left_curvature = ((1+(2*self.left_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.left_coef[1])**2)**(3/2))/np.absolute(2*self.left_coef[0])
         self.right_curvature = ((1+(2*self.right_coef[0]*self.binary_img.shape[0]*self.ym_per_pix + self.right_coef[1])**2)**(3/2))/np.absolute(2*self.right_coef[0])
-
-
+        self.camera_position = (self.binary_img.shape[1]/2)
+        y_pos = self.binary_img.shape[0]
+        lane_center = (self.left_pts[y_pos-1][0] + self.right_pts[y_pos-1][0])/2
+        self.offset = abs(self.camera_position - lane_center)*self.xm_per_pix
+        
     def get_color_warp(self):
         warp_zero = np.zeros_like(self.binary_img).astype(np.uint8)
         color_warp = np.dstack((warp_zero, warp_zero, warp_zero))

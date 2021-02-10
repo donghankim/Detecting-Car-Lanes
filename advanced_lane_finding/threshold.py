@@ -6,6 +6,9 @@ import os, pdb
 class Threshold():
     def __init__(self, config):
         self.config = config
+        self.img = None
+        self.gray_smoothed = None
+        self.hls = None
         self.sobelx = None
         self.sobely = None
         self.sobel_mag = None
@@ -71,23 +74,46 @@ class Threshold():
         self.gradient_dir = binary_output
 
 
-    def get_bin(self, img):
-        """
-        Combining the results from Sobel_x and the gradient magitude will
-        probably produce the best results.
-        """
-        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    def grad_method(self):
+        gray = cv2.cvtColor(self.img, cv2.COLOR_RGB2GRAY)
         self.gray_smoothed = cv2.GaussianBlur(gray, (3, 3), 0)
-        self.hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
-        self.S = self.hls[:, :, 2]
         self.sobel_x()
         self.sobel_y()
         self.sobel_xy()
         self.sobel_direction()
-        self.final_output = np.zeros_like(self.gradient_dir)
-        self.final_output[(self.sobel_mag == 1) & (self.gradient_dir == 1)] = 1
+        grad_output = np.zeros_like(self.gray_smoothed)
+        grad_output[(self.sobel_mag == 1) & (self.sobelx == 1)] = 1
+        return grad_output
+
+    def hls_method(self):
+        self.hls = cv2.cvtColor(self.img, cv2.COLOR_RGB2HLS)
+        h = self.hls[:,:,0]
+        l = self.hls[:,:,1]
+        s = self.hls[:,:,2]
+        r = self.img[:,:,0]
+        color_output = np.zeros_like(self.gray_smoothed)
+        # color_output[((s > 1) & (l == 0)) | ((s == 0) & (h > 1) & (l > 1))] = 1
+        color_output[(s > 90) & (s < 255)] = 1
+        return color_output
 
 
-        return self.sobelx
+    def get_bin(self, img):
+        """
+        Combining the results from gradient threhsolding and color thresholding (to make it more robus to shadows).
+        """
+        self.img = img
+        grad_output = self.grad_method()
+        color_output = self.hls_method()
+
+        self.final_output = np.zeros_like(self.gray_smoothed)
+        self.final_output[(grad_output == 1) | (color_output == 1)] = 1
+        #pdb.set_trace()
+        return self.final_output
+
+    # for debugging
+    def show_img(self, img):
+        plt.imshow(img, cmap = 'gray')
+        plt.show()
+
 
 

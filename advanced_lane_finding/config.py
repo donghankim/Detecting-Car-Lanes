@@ -7,6 +7,7 @@ def get_args():
 
     # GENERAL
     argp.add_argument('--undistort_test', action = 'store_true')
+    argp.add_argument('--debug', action = 'store_true')
 
     # PATH
     argp.add_argument('--root_dir', type=str, default='../media/')
